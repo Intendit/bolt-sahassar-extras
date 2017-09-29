@@ -15,6 +15,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class SahAssarExtrasExtension extends SimpleExtension
 {
+    private $pushAssets = [];
+
     protected function registerTwigPaths()
     {
         return [
