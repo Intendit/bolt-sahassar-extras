@@ -6,6 +6,7 @@ use Bolt\Extension\SimpleExtension;
 use Bolt\Asset\Snippet\Snippet;
 use Bolt\Controller\Zone;
 use Bolt\Asset\Target;
+use Bolt\Asset\File\Stylesheet;
 use Bolt\Helpers\Html;
 use Symfony\Component\VarDumper\VarDumper;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
@@ -55,9 +56,12 @@ class SahAssarExtrasExtension extends SimpleExtension
             ->setZone(Zone::FRONTEND)
         ;
 
+        $css = (new Stylesheet('css/custom.css'))
+            ->setZone(Zone::BACKEND);
         return [
             $asset,
-        ];
+            $css,
+        ]
     }
 
     protected function subscribe(EventDispatcherInterface $dispatcher)

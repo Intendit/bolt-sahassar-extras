@@ -1,80 +1,43 @@
-{% set definedSubs = [] %}
+{% import '@bolt/_nav/_macros.twig' as nav %}
 
-{% for slug, contenttype in app.config.get('contenttypes')  %}
-    {% setcontent records = slug limit 4 nohydrate orderby '-datechanged' %}
-    {% if not isallowed('contenttype:' ~ slug ~ ':create') and isallowed('contenttype:' ~ slug) and records|length == 1 and contenttype.show_in_menu == "true" %}
-        <li>
-            <a href="{{ path('editcontent', {contenttypeslug: slug, id: records|first.id}) }}">
-                {{ nav.label(
-                    contenttype.icon_one|default(''),
-                    __(['contenttypes', contenttype.slug, 'name', 'plural'], {DEFAULT: contenttype.name})
-                ) }}
-            </a>
-        </li>
-    {% elseif isallowed('contenttype:' ~ slug) %}
-        {% set sub_view = {
-            icon: contenttype.icon_many|default(contenttype.show_in_menu ? 'fa:files-o' : 'fa:th-list'),
-            label: __('contenttypes.generic.view', {'%contenttypes%': contenttype.slug}),
-            link: path('overview', {'contenttypeslug': slug})
-        } %}
-        {% set sub_new = {
-            icon: 'fa:plus',
-            label: __('contenttypes.generic.new', {'%contenttype%': slug}),
-            link: path('editcontent', {'contenttypeslug': slug}),
-            isallowed: 'contenttype:' ~ slug ~ ':create'
-        } %}
-        {% set sub = [sub_view, sub_new, '-'] %}
+{% set content_menus = menus.get('content').children|default([]) %}
 
-        {# ContentTypes, where show_in_menu is set true #}
-        {% if contenttype.show_in_menu == "true" %}
+{# Each "main" ContentType menu and sub-menu #}
+{% if content_menus.main is defined %}
+    {% for name, menu in content_menus.main.children %}
+        {% set sub = [] %}
 
-            {% for record in records %}
-                {% set sub = sub|merge([
-                    {
-                        icon: contenttype.icon_one|default('fa:file-text-o'),
-                        label: record.excerpt(80, true)|replace({"</b>": "&nbsp;</b>"})|trim,
-                        link: path('editcontent', {'contenttypeslug': slug, 'id': record.id})
-                    }
-                ]) %}
+        {% if menu.group %}
+            {% set active = false %}
+            {% for sub_menu in menu.children %}
+                {% if sub_menu.has('singleton') %}
+                    {% set sub_menu = sub_menu.children|first %}
+                {% endif %}
+                {% set sub = sub|merge([sub_menu]) %}
             {% endfor %}
-
-            {% set label = __(['contenttypes', contenttype.slug, 'name', 'plural'], {DEFAULT: contenttype.name}) %}
-            {% set active = (page_nav == 'Content/*' and context.contenttype.slug|default == slug) %}
-
-            {{ nav.submenu(contenttype.icon_many|default(''), label, sub, active, true) }}
-
-        {# ContentTypes, where show_in_menu is set to a custom value or false #}
         {% else %}
+            {% set active = (page_nav == 'Content/*' and context.contenttype.slug|default == name) %}
+            {% set is_submenu = false %}
 
-            {% set sub_view = {
-                icon: contenttype.icon_many|default(contenttype.show_in_menu ? 'fa:files-o' : 'fa:th-list'),
-                label: __(['contenttypes', contenttype.slug, 'name', 'plural'], {DEFAULT: contenttype.name}),
-            } %}
-
-            {% if not isallowed('contenttype:' ~ slug ~ ':create') and isallowed('contenttype:' ~ slug) and records|length == 1 %}
-                {% set sub_view = sub_view|merge({link: path('editcontent', {contenttypeslug: slug, id: records|first.id})}) %}
-            {% else %}
-                {% set sub_view = sub_view|merge({link: path('overview', {'contenttypeslug': slug})}) %}
+            {# View ContentType & New ContentType #}
+            {% if menu.has('view') %}
+                {% set sub = sub|merge([menu.get('view')]) %}
             {% endif %}
+            {% if menu.has('new') %}
+                {% set sub = sub|merge([menu.get('new')]) %}
+            {% endif %}
+            {% set sub = sub|merge(['-']) %}
 
-            {% set key = contenttype.show_in_menu ?: __('general.phrase.other-content') %}
-            {% if definedSubs[key] is defined %}
-                {% for submenuName, submenudef in definedSubs %}
-                    {% if key == submenuName %}
-                        {% set submenudef = submenudef|merge([sub_view]) %}
-                        {% set definedSubs = definedSubs|merge({(submenuName) : submenudef}) %}
-                    {% endif %}
+            {# Recently edited records for this ContentType #}
+            {% if menu.has('recent') %}
+                {% for record_menu in menu.get('recent').children %}
+                    {% set sub = sub|merge([record_menu]) %}
                 {% endfor %}
-            {% else %}
-                {% set definedSubs = definedSubs|merge({(key) : [sub_view]}) %}
+            {% elseif menu.has('singleton') %}
+                {% set sub = sub|merge([menu.children|first]) %}
             {% endif %}
-
         {% endif %}
-    {% endif %}
-{% endfor %}
 
-{# Display contenttypes, that have show_in_menu set to false or a custom value in submenus #}
-{% for submenuName, submenudef in definedSubs %}
-    {# Create the submenu and force it to be a submenu #}
-    {{ nav.submenu('fa:th-list', submenuName, submenudef, false, false, false, true) }}
-{% endfor %}
+        {{ nav.submenu(menu.icon, menu.label, sub, active, not menu.group, null, menu.group) }}
+    {% endfor %}
+{% endif %}

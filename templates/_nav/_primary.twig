@@ -3,10 +3,10 @@
         <i class="fa fa-fw fa-bars"></i> MENU
     </button>
     <a class="navbar-brand" href="{{ path('dashboard') }}">
-        <img src="{{ asset(app.config.get('general/branding/logo_small/path', 'img/bolt-icon.svg'), app.config.get('general/branding/logo_small/namespace', 'bolt')) }}">
-        <img src="{{ asset('img/bolt-icon.svg', 'bolt') }}">
+        <img src="{{ asset(app.config.get('general/branding/logo_small/path', 'extensions'), app.config.get('general/branding/logo_small/namespace', 'bolt')) }}">
+        {# {{ config.get('general/branding/name')|default('Bolt') }} #}
     </a>
-    <a href="{{ path('dashboard') }}" class="navbar-site hidden-xs"><span>{% if app.config.get('general/sitename') %}{{ app.config.get('general/sitename') }}{% else %}Site{% endif %}</span></a>
+    <a href="{{ path('dashboard') }}" class="navbar-site hidden-xs"><span>{% if config.get('general/sitename') %}{{ config.get('general/sitename') }}{% else %}Site{% endif %}</span></a>
 </div>
 
 
@@ -16,7 +16,7 @@
         {# one omnisearch here, for "small and up", the other in the side-navbar #}
         <form class="navbar-form hidden-xs">
             <div class="form-group has-feedback omnisearch" role="search">
-                <select class="form-control"></select>
+                <select class="form-control" data-omnisearch-url="{{ path('omnisearch') }}"></select>
                 <span class="form-control-feedback"><i class="fa fa-search"></i></span>
             </div>
         </form>
@@ -29,6 +29,24 @@
         </a>
     </li>
 
+    {% if context.contenttype is defined %}
+    <li id="live_editor_save" class="save-live-editor">
+        <a>
+            <i class="fa fa-fw fa-flag"></i>
+            {{ __('contenttypes.generic.save', {'%contenttype%': context.contenttype.slug}) }}
+        </a>
+    </li>
+    {% endif %}
+
+    {% if context.contenttype is defined %}
+    <li id="live_editor_save" class="save-live-editor">
+        <a>
+            <i class="fa fa-fw fa-flag"></i>
+            {{ __('contenttypes.generic.save', {'%contenttype%': context.contenttype.slug}) }}
+        </a>
+    </li>
+    {% endif %}
+
     <li class="close-live-editor">
         <a>
             <i class="fa fa-fw fa-times-circle-o"></i>
@@ -38,7 +56,8 @@
 
     <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            <i class="fa fa-fw fa-user"></i> <span>{{ user.displayname|excerpt(16) }}</span> <i class="fa fa-caret-down"></i>
+            {# FIXME DTO: When the session hits the check timer, the user object can be empty #}
+            <i class="fa fa-fw fa-user"></i> <span>{{ user.displayname|default[:16] }}</span> <i class="fa fa-caret-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user" role="menu" >
             <li>
