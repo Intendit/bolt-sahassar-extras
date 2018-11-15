@@ -1,5 +1,5 @@
 {
-    "name": "sahassar/extras",
+    "name": "intendit/extras",
     "description": "Extension to add a few extras to bolt that I like.",
     "type": "bolt-extension",
     "require": {
