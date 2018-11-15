@@ -61,7 +61,7 @@ class SahAssarExtrasExtension extends SimpleExtension
         return [
             $asset,
             $css,
-        ]
+        ];
     }
 
     protected function subscribe(EventDispatcherInterface $dispatcher)
