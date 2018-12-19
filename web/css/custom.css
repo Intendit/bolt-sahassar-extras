@@ -1,3 +1,44 @@
-.navpage-primary {
-    background-color: red;
+.navbar-bolt {
+    background: transparent;
+    background-color: #eee;
+    background-repeat: repeat-x;
+    border-bottom: 6px solid transparent;
+    -o-border-image: url(/view/img/iborder.png) 100% 6 stretch;
+    border-image: url(/view/img/iborder.png) 100% 6 stretch;
+    box-shadow: none;
+}
+
+.navbar-site {
+    color: #333!important;    
+}
+
+.navbar .navbar-brand img {
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    margin: 0 2px 2px 0;
+}
+
+.navbar-static-top .nav>li>a {
+    color: #333;
+    font-weight: 400;
+}
+
+#navpage-secondary {
+    background-color: #fdfdfa !important;
+    box-shadow: none !important;
+}
+
+#navpage-secondary .nav>li>a, #navpage-secondary .nav>li>form, #navpage-secondary .nav>li>em {
+    color: #000 !important;    
+}
+
+#navpage-secondary .nav>li i.icon {
+    background: #eee !important;
+    color: #333 !important;     
+}
+
+#navpage-secondary .nav>li.active>a {
+    color: #fdfdfa !important;
+    background: #406471 !important;
 }
