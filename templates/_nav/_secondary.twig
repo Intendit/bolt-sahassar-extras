@@ -59,6 +59,9 @@
         {% endif %}
         {% if isallowed('files:theme') %}
             {% if app.config.get('theme/shortcuts') %}
+                <li class="nav-secondary-collapse">
+                    <a href="#">{{ nav.label('fa:code', __('Shortcuts')) }}</a>
+                </li>            
                 {% for shortcut in app.config.get('theme/shortcuts') %}                    
                     {% if shortcut.file|default(false) %}                        
                         {{ self.linkExt(
