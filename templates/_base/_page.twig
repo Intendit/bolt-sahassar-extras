@@ -19,10 +19,10 @@
 {% from '@bolt/_buic/_moment.twig' import buic_moment %}
 {% from '@bolt/_macro/_intendit_path.twig' import intendit_path %}
 
-{% if block('page_subtitle') is defined %}
-    {% set page_title = block('page_title') %}
-{% else %}
+{% if intendit_path(context.file)|raw|trim is not empty %}
     {% set page_title = block('page_title') ~ ' » ' ~ intendit_path(context.file) %}
+{% else %}
+    {% set page_title = block('page_title') %}
 {% endif %}
 
 
