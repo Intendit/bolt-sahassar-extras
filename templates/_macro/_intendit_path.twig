@@ -1,0 +1,12 @@
+{% macro intendit_path(directory, pathoptions) -%}
+    {# directory \Bolt\Filesystem\Handler\DirectoryInterface #}
+    {% if directory is not null %}
+        {%- set pathoptions = pathoptions|default({})|merge({'namespace': directory.mountPoint}) -%}
+        {%- for dir in directory.parents|reverse|merge([directory]) -%}
+            {# dir \Bolt\Filesystem\Handler\DirectoryInterface #}
+            {%- if loop.last -%}
+                {{- dir.filename ?: dir.mountPoint -}}
+            {% endif %}
+        {%- endfor -%}
+    {% endif %}        
+{%- endmacro %}
