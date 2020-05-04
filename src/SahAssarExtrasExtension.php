@@ -43,7 +43,8 @@ class SahAssarExtrasExtension extends SimpleExtension
             'shuffle'  => 'twigShuffle',
             'd'        => 'dumper',
             'p'        => 'pushLink',
-            'barelink' => 'bareLink'
+            'barelink' => 'bareLink',
+            'json_decode' => 'jsonDecode'
         ];
     }
 
@@ -159,4 +160,14 @@ class SahAssarExtrasExtension extends SimpleExtension
 
         return VarDumper::dump($variable);
     }
+
+    function jsonDecode($string)
+    {
+        if (is_object(json_decode($string)) || is_array(json_decode($string))) 
+        { 
+            return json_decode($string);
+        } else {
+            return false;
+        }
+    }    
 }
