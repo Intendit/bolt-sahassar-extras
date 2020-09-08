@@ -42,3 +42,10 @@
     color: #fdfdfa !important;
     background: #406471 !important;
 }
+
+[data-bolt-fieldset="slug"] label {
+  width: 25%;
+}
+[data-bolt-fieldset="slug"] div.col-sm-12 {
+  width: 75%;
+}
