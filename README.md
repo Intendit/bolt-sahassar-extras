@@ -46,4 +46,4 @@ Example config in a theme's config.yml:
           icon: jsfiddle
           name: custom.js
 ### Contenttypes
-Adding `collapsed: true` on block field will automaticly have all blocks related to the field collapsed. The extension icon (lightbulb) is by Michael
+Adding `collapsed: true` on block and repeater fields will automaticly have all content related to the fields collapsed.
