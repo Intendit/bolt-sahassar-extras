@@ -45,5 +45,5 @@ Example config in a theme's config.yml:
         - file: /js/custom.js
           icon: jsfiddle
           name: custom.js
-
-*The extension icon (lightbulb) is by Michael Jonny Marzi from the Noun Project*
+### Contenttypes
+Adding `collapsed: true` on block field will automaticly have all blocks related to the field collapsed. The extension icon (lightbulb) is by Michael
