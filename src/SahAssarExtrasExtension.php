@@ -8,15 +8,26 @@ use Bolt\Controller\Zone;
 use Bolt\Asset\Target;
 use Bolt\Asset\File\Stylesheet;
 use Bolt\Helpers\Html;
+use Silex\Application;
+use Silex\ControllerCollection;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\VarDumper\VarDumper;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\CliDumper;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class SahAssarExtrasExtension extends SimpleExtension
 {
     private $pushAssets = [];
+
+    protected function registerFrontendRoutes(ControllerCollection $collection)
+    {
+        $collection->match('/setCookieByRequest', [$this, 'setNewCookie']);
+    }
 
     protected function registerTwigPaths()
     {
@@ -32,7 +43,9 @@ class SahAssarExtrasExtension extends SimpleExtension
             'shuffle'  => 'twigShuffle',
             'd'        => 'dumper',
             'p'        => 'pushLink',
-            'barelink' => 'bareLink'
+            'barelink' => 'bareLink',
+            'getcookies' => 'getCookies',
+            'getrss' => 'getRss'
         ];
     }
 
@@ -169,5 +182,36 @@ class SahAssarExtrasExtension extends SimpleExtension
         } else {
             return false;
         }
-    }    
+    }
+    
+    public function getCookies()
+    {
+        $request = Request::createFromGlobals();
+        $cookies = $request->cookies->all();
+        return $cookies;
+    }
+
+    public function getRss($url = "")
+    {
+        if (isset($url)) {
+            $rss = simplexml_load_file($url);
+            return $rss;
+        } else {
+            return false;
+        }
+    }
+
+    public function setNewCookie(Application $app, Request $request)
+    {
+        if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+            $response = new JsonResponse();
+            $data = json_decode($request->getContent(), true);
+            foreach ($data as $key => $value) {                
+                $response->headers->setCookie(new Cookie($key, $value, strtotime('now + 59 minutes'), false));
+            }            
+            return $response;
+        } else {
+            return false;
+        }
+    }     
 }
