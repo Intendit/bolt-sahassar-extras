@@ -49,3 +49,6 @@
 [data-bolt-fieldset="slug"] div.col-sm-12 {
   width: 75%;
 }
+.repeater-group:last-child .panel-body {
+    display: block!important;
+}
